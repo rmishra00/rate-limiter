@@ -1,11 +1,64 @@
-class FixedWindowRateLimiter{
-  constructor(limit, windowMs){
-    this.limit = limit,
-    this.windowMs = windowMs,
+class FixedWindowRateLimiter {
+  constructor(limit, windowMs) {
+    this.limit = limit;
+    this.windowMs = windowMs;
     this.requestTracker = new Map()
-  }
-  allowRequest(ip){
 
+    setInterval(()=> {
+      this.cleanUpExpiredUsers
+  }, this.windowMs)
   }
-  module.exports
+  allowRequest(ip) {
+    //first user, ip doesn't exist
+    const now = Date.now();
+    if (!this.requestTracker.has(ip)) {
+      const user = {
+        count: 1,
+        startTime: now
+      }
+      this.requestTracker.set(ip, user)
+      return {
+        allowed: true,
+        remaining: this.limit - user.count
+      }
+    }
+    //existing user
+    const user = this.requestTracker.get(ip);
+
+    //if window expired
+    if (now - user.startTime > this.windowMs) {
+      user.count = 1;
+      user.startTime = now;
+      return {
+        allowed: true,
+        remaining: this.limit - user.count
+      }
+    }
+    //limit reached
+    if (user.count >= this.limit) {
+      return {
+        allowed: false,
+        remaining: 0
+      }
+    }
+    //allow request
+    user.count++;
+    console.log({
+      ip,
+      count: user.count
+    })
+    return {
+      allowed: true,
+      remaining: this.limit - user.count
+    }
+  }
+  cleanUpExpiredUsers(){
+    const now = Date.now();
+    for(const [ip, user] of this.requestTracker){
+      if(now - user.startTime > this.windowMs){
+        this.requestTracker.delete(ip);
+      }
+    }
+  }
 }
+module.exports = FixedWindowRateLimiter;
