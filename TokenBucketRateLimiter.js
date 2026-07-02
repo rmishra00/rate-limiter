@@ -27,13 +27,11 @@ class TokenBucketRateLimiter {
       return {
         allowed: true,
         tokens: user.tokens
-
       }
     }
     return {
       allowed: false,
       tokens: user.tokens
-
     }
   }
 }
