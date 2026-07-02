@@ -4,9 +4,9 @@ class FixedWindowRateLimiter {
     this.windowMs = windowMs;
     this.requestTracker = new Map()
 
-    setInterval(()=> {
-      this.cleanUpExpiredUsers
-  }, this.windowMs)
+    setInterval(() => {
+      this.cleanUpExpiredUsers()
+    }, this.windowMs)
   }
   allowRequest(ip) {
     //first user, ip doesn't exist
@@ -14,7 +14,8 @@ class FixedWindowRateLimiter {
     if (!this.requestTracker.has(ip)) {
       const user = {
         count: 1,
-        startTime: now
+        startTime: now, 
+        lastRequestTime:now
       }
       this.requestTracker.set(ip, user)
       return {
@@ -29,6 +30,7 @@ class FixedWindowRateLimiter {
     if (now - user.startTime > this.windowMs) {
       user.count = 1;
       user.startTime = now;
+      user.lastRequestTime=now;
       return {
         allowed: true,
         remaining: this.limit - user.count
@@ -36,6 +38,7 @@ class FixedWindowRateLimiter {
     }
     //limit reached
     if (user.count >= this.limit) {
+      this.lastRequestTime = now;
       return {
         allowed: false,
         remaining: 0
@@ -43,6 +46,7 @@ class FixedWindowRateLimiter {
     }
     //allow request
     user.count++;
+    user.lastRequestTime = now;
     console.log({
       ip,
       count: user.count
@@ -52,10 +56,10 @@ class FixedWindowRateLimiter {
       remaining: this.limit - user.count
     }
   }
-  cleanUpExpiredUsers(){
+  cleanUpExpiredUsers() {
     const now = Date.now();
-    for(const [ip, user] of this.requestTracker){
-      if(now - user.startTime > this.windowMs){
+    for (const [ip, user] of this.requestTracker) {
+      if (now - user.lastRequestTime > this.windowMs) {
         this.requestTracker.delete(ip);
       }
     }
