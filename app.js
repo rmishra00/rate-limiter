@@ -1,7 +1,7 @@
 const express = require('express');
 const {connectRedis}= require('./redisClient');
 
-const rateLimiterMiddleware = require('./rateLimiterMiddleware');
+const rateLimiterMiddleware = require('./middleware/rateLimiterMiddleware');
 const app = express();
 
 app.use(rateLimiterMiddleware);

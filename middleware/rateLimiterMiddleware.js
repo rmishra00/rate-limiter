@@ -1,6 +1,6 @@
 // const FixedWindowRateLimiter = require('./FixedWindowRateLimiter');
 // const limiter = new FixedWindowRateLimiter(5, 60000);
-const TokenBucketRateLimiter = require('./In-memoryTokenBucketRateLimiter');
+const TokenBucketRateLimiter = require('../in-memorylimiters/In-memoryTokenBucketRateLimiter');
 const limiter = new TokenBucketRateLimiter(5, 0)
 
 function rateLimiterMiddleware(req,res,next){
