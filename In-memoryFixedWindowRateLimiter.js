@@ -2,7 +2,7 @@ class FixedWindowRateLimiter {
   constructor(limit, windowMs) {
     this.limit = limit;
     this.windowMs = windowMs;
-    this.requestTracker = new Map()
+    this.requestTracker = new Map();
 
     setInterval(() => {
       this.cleanUpExpiredUsers()

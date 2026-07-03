@@ -1,4 +1,6 @@
 const express = require('express');
+const {connectRedis}= require('./redisClient');
+
 const rateLimiterMiddleware = require('./rateLimiterMiddleware');
 const app = express();
 
@@ -7,6 +9,10 @@ app.get('/hello', (req, res) => {
   res.send("Welcome");
 
 })
-app.listen(3000, () => {
+async function startServer(){
+  await connectRedis();
+  app.listen(3000, () => {
   console.log("Server is running at 3000");
 })
+}
+startServer();
