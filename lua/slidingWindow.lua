@@ -9,6 +9,7 @@
  local count = redis.call("ZCARD", KEYS[1]);
  if(count>=limit) then
   return -1;
+ end
 
 redis.call("ZADD", KEYS[1],currentTime, member);
 
