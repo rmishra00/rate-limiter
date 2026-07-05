@@ -14,7 +14,7 @@ class RedisFixedWindowRateLimiter{
       this.fixedWindowLuaScript,
       {
         keys:[key],
-        arguments:[this.windowSec]
+        arguments:[String(this.windowSec)]
       }
     )
     if(count>this.limit){
