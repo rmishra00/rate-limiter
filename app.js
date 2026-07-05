@@ -1,19 +1,15 @@
 const express = require('express');
 const {connectRedis}= require('./redisClient');
 
-// const rateLimiterMiddleware = require('./middleware/rateLimiterMiddleware');
 const app = express();
+const RedisTokenBucketRateLimiter = require('./redislimiters/RedisTokenBucketRateLimiter');
+const createRateLimiterMiddleware = require('./middleware/rateLimiterMiddleware');
+const limiter = new RedisTokenBucketRateLimiter(10,2,8400);
 
-// const redisRateLimiterMiddleware = require('./middleware/redisFixedWindowRateLimiterMiddleware');
-// const redisRateLimiterMiddleware = require('./middleware/redisTokenBucketRateLimiterMiddleware')
-
-const redisRateLimiterMiddleware = require('./middleware/redisSlidingWindowRateLimiter');
-// app.use(rateLimiterMiddleware);
-app.use(redisRateLimiterMiddleware);
+app.use(createRateLimiterMiddleware(limiter));
 
 app.get('/hello', (req, res) => {
   res.send("Welcome");
-
 })
 async function startServer(){
   await connectRedis();
