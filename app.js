@@ -4,7 +4,8 @@ const {connectRedis}= require('./redisClient');
 // const rateLimiterMiddleware = require('./middleware/rateLimiterMiddleware');
 const app = express();
 
-const redisRateLimiterMiddleware = require('./middleware/redisRateLimiterMiddleware');
+// const redisRateLimiterMiddleware = require('./middleware/redisFixedWindowRateLimiterMiddleware');
+const redisRateLimiterMiddleware = require('./middleware/redisTokenBucketRateLimiterMiddleware')
 
 // app.use(rateLimiterMiddleware);
 app.use(redisRateLimiterMiddleware);

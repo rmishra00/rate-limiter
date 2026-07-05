@@ -2,7 +2,7 @@ const RedisFixedWindowRateLimiter = require('../redislimiters/RedisFixedWindowRa
 
 const limiter = new RedisFixedWindowRateLimiter(5, 60);
 
-async function redisRateLimiterMiddleware(req,res,next){
+async function redisFixedWindowRateLimiterMiddleware(req,res,next){
   const ip = req.ip;
   const result = await limiter.allowRequest(ip);
   console.log({
@@ -19,4 +19,4 @@ async function redisRateLimiterMiddleware(req,res,next){
   next();
 }
 
-module.exports = redisRateLimiterMiddleware;
+module.exports = redisFixedWindowRateLimiterMiddleware;
